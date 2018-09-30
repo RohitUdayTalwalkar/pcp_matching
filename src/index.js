@@ -174,8 +174,8 @@ function update() {
         }
         return;
     }
-    if (duration > 150) {
-        duration -= 20;
+    if (duration > 350) {
+        duration -= 50;
     }
     var swap = Math.ceil(Math.random() * 2);
     while (lastSwap === swap) {

@@ -14,6 +14,10 @@ var config = {
 
 var game = new Phaser.Game(config);
 
+// 0 = Title
+// 1 = In Game
+var gameState = 0;
+
 var people = [
     'patrick',
     'alan',
@@ -109,12 +113,22 @@ function runRound() {
     window.setTimeout(stopRound, 6000)
 }
 
+// hmmm?
+function handleTitle(_that) {
+}
+
 var duration = 1000;
+var lastSwap;
 function update() {
-    if (this.tweens.getAllTweens().length > 0) {
+    if (gameState === 1000)
+    {
+        // handleTitle(this);
         return;
     }
 
+    if (this.tweens.getAllTweens().length > 0) {
+        return;
+    }
     if (!keepSwapping) {
         if (game.input.activePointer.isDown) {
             // did they click on the right one?
@@ -124,7 +138,12 @@ function update() {
     if (duration > 150) {
         duration -= 20;
     }
-    const swap = Math.ceil(Math.random() * 2);
+    var swap = Math.ceil(Math.random() * 2);
+    while (lastSwap === swap) {
+        swap = Math.ceil(Math.random() * 2);
+    }
+    lastSwap = swap;
     swapCups(this, swaps[swap], duration);
+    lastSwap = swap;
 }
 runRound();

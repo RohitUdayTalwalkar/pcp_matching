@@ -98,19 +98,33 @@ function create ()
     game.input.mouse.capture = true;
 }
 
+var round = 0;
+var keepSwapping = true;
+
+function stopRound() {
+    keepSwapping = false;
+}
+
+function runRound() {
+    window.setTimeout(stopRound, 6000)
+}
+
 var duration = 1000;
 function update() {
     if (this.tweens.getAllTweens().length > 0) {
         return;
     }
-    if (duration > 200) {
-        duration -= 30;
+
+    if (!keepSwapping) {
+        if (game.input.activePointer.isDown) {
+            // did they click on the right one?
+        }
+        return;
+    }
+    if (duration > 150) {
+        duration -= 20;
     }
     const swap = Math.ceil(Math.random() * 2);
     swapCups(this, swaps[swap], duration);
-
-    // if (game.input.activePointer.isDown) {
-    //     const swap = Math.ceil(Math.random() * 2);
-    //     swapCups(this, swaps[swap], 600);
-    // }
 }
+runRound();

@@ -104,28 +104,45 @@ function create ()
 }
 
 var round = 0;
-var keepSwapping = true;
+var keepSwapping = false;
+
+function startRound() {
+    keepSwapping = true;
+    window.setTimeout(stopRound, 12000);
+}
 
 function stopRound() {
     keepSwapping = false;
 }
 
-function runRound() {
-    window.setTimeout(stopRound, 6000)
+function runRound(tweens) {
+    raiseCup(cups[0].cup, tweens, () => {
+        raiseCup(cups[1].cup, tweens, () => {
+            raiseCup(cups[2].cup, tweens, startRound );
+        })
+    });
 }
 
-function raiseCup(cup, tweens) {
+function raiseCup(cup, tweens, onDone) {
+    if (!onDone) {
+        onDone = () => {};
+    }
     tweens.add({
         targets: cup,
         x: cup.x,
         y: cup.y - 200,
         duration: 500,
         ease: 'Power2',
-        yoyo: true
+        yoyo: true,
+        onComplete: onDone,
     });    
 }
 
 function clickCup(pointer) {
+    // wait until cups stop moving
+    if (keepSwapping) {
+        return;
+    }
     raiseCup(this, pointer.manager.game.scene.scenes[0].tweens);
 }
 
@@ -135,7 +152,12 @@ function handleTitle(_that) {
 
 var duration = 1000;
 var lastSwap;
+var gameStarted = false;
 function update() {
+    if (!gameStarted) {
+        gameStarted = true;
+        runRound(this.tweens);
+    }
 
     // if (gameState === 0)
     // {
@@ -163,4 +185,3 @@ function update() {
     swapCups(this, swaps[swap], duration);
     lastSwap = swap;
 }
-runRound();

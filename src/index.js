@@ -79,13 +79,13 @@ function swapCups(_that, swap, duration) {
 }
 
 var gameOverText;
+var winText;
 var startGameText;
 
 function create ()
 {
-    gameOverText = this.add.text(game.width / 2, game.height / 2, 'Game Over');
-    gameOverText.scaleX = 0;
-    gameOverText.scaleY = 0;
+    gameOverText = this.add.text(100, 100, 'Game Over');
+    winText = this.add.text(100, 100, 'You Win!');
 
     var loadedPeople = [];
     for (let person of people) {
@@ -124,6 +124,11 @@ function stopRound() {
 }
 
 function runRound(tweens) {
+    gameOverText.scaleX = 0;
+    gameOverText.scaleY = 0;
+    winText.scaleX = 0;
+    winText.scaleY = 0;    
+
     raiseCup(cups[0].cup, tweens, () => {
         raiseCup(cups[1].cup, tweens, () => {
             raiseCup(cups[2].cup, tweens, startRound );
@@ -155,8 +160,12 @@ function clickCup(pointer) {
         if (this.parent.person.texture.key != 'doctor') {
             gameOverText.scaleX = 1;
             gameOverText.scaleY = 1;
+        } else {
+            winText.scaleX = 1;
+            winText.scaleY = 1;
         }
     });
+    window.setTimeout(3000, runRound(pointer.manager.game.scene.scenes[0].tweens));
 }
 
 // hmmm?

@@ -78,8 +78,15 @@ function swapCups(_that, swap, duration) {
 
 }
 
+var gameOverText;
+var startGameText;
+
 function create ()
 {
+    gameOverText = this.add.text(game.width / 2, game.height / 2, 'Game Over');
+    gameOverText.scaleX = 0;
+    gameOverText.scaleY = 0;
+
     var loadedPeople = [];
     for (let person of people) {
         loadedPeople.push(this.add.image(0, 0, person));
@@ -99,6 +106,7 @@ function create ()
         });
         loadedPeople.splice(person, 1);
         cups[i].cup.on('pointerdown', clickCup);
+        cups[i].cup.parent = cups[i];
     }
     game.input.mouse.capture = true;
 }
@@ -143,7 +151,12 @@ function clickCup(pointer) {
     if (keepSwapping) {
         return;
     }
-    raiseCup(this, pointer.manager.game.scene.scenes[0].tweens);
+    raiseCup(this, pointer.manager.game.scene.scenes[0].tweens, () => {
+        if (this.parent.person.texture.key != 'doctor') {
+            gameOverText.scaleX = 1;
+            gameOverText.scaleY = 1;
+        }
+    });
 }
 
 // hmmm?
@@ -153,6 +166,8 @@ function handleTitle(_that) {
 var duration = 1000;
 var lastSwap;
 var gameStarted = false;
+
+
 function update() {
     if (!gameStarted) {
         gameStarted = true;
